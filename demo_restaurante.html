@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>BurgerFlash | Comida rápida caliente en minutos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:#020617;
+      color:#e5e7eb;
+      line-height:1.6;
+    }
+    a{text-decoration:none;color:inherit;}
+
+    .container{
+      max-width:1200px;
+      margin:0 auto;
+      padding:0 20px;
+    }
+
+    /* NAVBAR */
+    header{
+      position:sticky;
+      top:0;
+      z-index:40;
+      background:rgba(15,23,42,.96);
+      border-bottom:1px solid #1f2937;
+      backdrop-filter:blur(10px);
+    }
+    .nav-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:12px 0;
+    }
+    .logo{
+      font-weight:800;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      font-size:1rem;
+      color:#f97316;
+    }
+    .logo span{color:#22c55e;}
+    .nav-links{
+      display:flex;
+      gap:18px;
+      font-size:.9rem;
+    }
+    .nav-links a{
+      position:relative;
+      padding-bottom:3px;
+    }
+    .nav-links a::after{
+      content:"";
+      position:absolute;
+      left:0;
+      bottom:0;
+      width:0;
+      height:2px;
+      background:linear-gradient(135deg,#f97316,#22c55e);
+      transition:width .2s ease;
+    }
+    .nav-links a:hover::after{width:100%;}
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:9px 18px;
+      border-radius:999px;
+      border:none;
+      cursor:pointer;
+      font-size:.9rem;
+      font-weight:600;
+      transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
+      white-space:nowrap;
+    }
+    .btn-primary{
+      background:linear-gradient(135deg,#f97316,#facc15);
+      color:#111827;
+      box-shadow:0 12px 35px rgba(248,113,113,.4);
+    }
+    .btn-primary:hover{
+      transform:translateY(-1px);
+      box-shadow:0 16px 45px rgba(248,113,113,.55);
+    }
+    .btn-outline{
+      background:transparent;
+      border:1px solid #4b5563;
+      color:#e5e7eb;
+    }
+    .btn-outline:hover{
+      background:rgba(148,163,184,.1);
+    }
+
+    /* HERO */
+    .hero{
+      padding:70px 0 60px;
+      background:
+        radial-gradient(circle at top left,rgba(248,113,113,.2) 0,transparent 55%),
+        radial-gradient(circle at top right,rgba(34,197,94,.18) 0,transparent 55%);
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns:minmax(0,1.7fr) minmax(0,1.3fr);
+      gap:40px;
+      align-items:center;
+    }
+    @media(max-width:900px){
+      .hero-grid{grid-template-columns:minmax(0,1fr);}
+    }
+    .hero-kicker{
+      text-transform:uppercase;
+      letter-spacing:.15em;
+      font-size:.8rem;
+      color:#fed7aa;
+      margin-bottom:10px;
+    }
+    .hero-title{
+      font-size:2.6rem;
+      line-height:1.1;
+      margin-bottom:16px;
+    }
+    .hero-title span{
+      background:linear-gradient(135deg,#f97316,#facc15);
+      -webkit-background-clip:text;
+      color:transparent;
+    }
+    .hero-sub{
+      font-size:1rem;
+      max-width:480px;
+      color:#9ca3af;
+      margin-bottom:22px;
+    }
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:20px;
+    }
+    .hero-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:18px;
+      font-size:.85rem;
+      color:#9ca3af;
+    }
+    .hero-card{
+      background:rgba(15,23,42,.96);
+      border-radius:20px;
+      padding:22px 18px;
+      border:1px solid #1f2937;
+      box-shadow:0 20px 50px rgba(15,23,42,.9);
+    }
+    .hero-card h3{
+      font-size:1rem;
+      margin-bottom:8px;
+    }
+    .hero-list{
+      list-style:none;
+      font-size:.88rem;
+      color:#9ca3af;
+    }
+    .hero-list li{margin-bottom:6px;}
+    .hero-badge-row{
+      display:flex;
+      justify-content:space-between;
+      margin-top:14px;
+      font-size:.85rem;
+      color:#9ca3af;
+    }
+    .hero-pill{
+      margin-top:14px;
+      font-size:.78rem;
+      padding:7px 10px;
+      border-radius:999px;
+      background:rgba(34,197,94,.16);
+      color:#bbf7d0;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    /* GENERIC SECTIONS */
+    section{padding:60px 0;}
+    .section-title{
+      text-align:center;
+      font-size:1.8rem;
+      margin-bottom:8px;
+    }
+    .section-sub{
+      text-align:center;
+      max-width:520px;
+      margin:0 auto 32px;
+      font-size:.95rem;
+      color:#9ca3af;
+    }
+
+    /* PROMOS */
+    .grid-3{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:20px;
+    }
+    @media(max-width:900px){
+      .grid-3{grid-template-columns:repeat(2,minmax(0,1fr));}
+    }
+    @media(max-width:650px){
+      .grid-3{grid-template-columns:minmax(0,1fr);}
+    }
+    .promo-card{
+      border-radius:18px;
+      border:1px solid #1f2937;
+      background:#020617;
+      padding:18px 16px;
+      box-shadow:0 14px 40px rgba(15,23,42,.9);
+      position:relative;
+      overflow:hidden;
+    }
+    .promo-label{
+      font-size:.75rem;
+      padding:3px 9px;
+      border-radius:999px;
+      background:rgba(248,113,113,.18);
+      color:#fed7aa;
+      display:inline-block;
+      margin-bottom:6px;
+    }
+    .promo-title{
+      font-size:1.05rem;
+      margin-bottom:4px;
+      font-weight:600;
+    }
+    .promo-desc{
+      font-size:.9rem;
+      color:#9ca3af;
+      margin-bottom:6px;
+    }
+    .promo-price{
+      font-weight:700;
+      margin-top:6px;
+    }
+
+    /* MENÚ */
+    .menu-layout{
+      display:grid;
+      grid-template-columns:minmax(0,1.1fr) minmax(0,1.3fr);
+      gap:26px;
+      align-items:flex-start;
+    }
+    @media(max-width:900px){
+      .menu-layout{grid-template-columns:minmax(0,1fr);}
+    }
+    .menu-category{
+      margin-bottom:14px;
+    }
+    .menu-category h3{
+      font-size:1rem;
+      margin-bottom:4px;
+    }
+    .menu-category p{
+      font-size:.88rem;
+      color:#9ca3af;
+    }
+    .menu-list{
+      list-style:none;
+      font-size:.9rem;
+    }
+    .menu-list li{
+      display:flex;
+      justify-content:space-between;
+      margin-bottom:7px;
+    }
+    .menu-list span.price{
+      color:#facc15;
+      margin-left:10px;
+      white-space:nowrap;
+    }
+
+    /* PASOS */
+    .steps{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:18px;
+      font-size:.9rem;
+    }
+    @media(max-width:900px){
+      .steps{grid-template-columns:minmax(0,1fr);}
+    }
+    .step-card{
+      border-radius:14px;
+      border:1px solid #1f2937;
+      background:#020617;
+      padding:14px 12px;
+      box-shadow:0 12px 35px rgba(15,23,42,.9);
+    }
+    .step-num{
+      width:26px;height:26px;border-radius:999px;
+      display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,#f97316,#facc15);
+      color:#111827;
+      font-size:.8rem;
+      margin-bottom:6px;
+      font-weight:700;
+    }
+
+    /* OPINIONES */
+    .opiniones{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:18px;
+      font-size:.88rem;
+    }
+    @media(max-width:900px){
+      .opiniones{grid-template-columns:repeat(2,minmax(0,1fr));}
+    }
+    @media(max-width:650px){
+      .opiniones{grid-template-columns:minmax(0,1fr);}
+    }
+    .op-card{
+      border-radius:16px;
+      border:1px solid #1f2937;
+      background:#020617;
+      padding:16px 14px;
+      box-shadow:0 12px 35px rgba(15,23,42,.9);
+    }
+    .stars{color:#facc15;font-size:.9rem;margin-bottom:4px;}
+    .op-client{font-size:.8rem;color:#9ca3af;margin-top:6px;}
+
+    /* LOCAL */
+    .local-grid{
+      display:grid;
+      grid-template-columns:minmax(0,1.3fr) minmax(0,1.7fr);
+      gap:26px;
+      align-items:center;
+    }
+    @media(max-width:900px){
+      .local-grid{grid-template-columns:minmax(0,1fr);}
+    }
+    .local-box{
+      border-radius:18px;
+      border:1px solid #1f2937;
+      background:#020617;
+      padding:18px 16px;
+      box-shadow:0 16px 45px rgba(15,23,42,.9);
+      font-size:.9rem;
+      color:#9ca3af;
+    }
+    .map-placeholder{
+      border-radius:18px;
+      border:1px solid #1f2937;
+      background:radial-gradient(circle at center,rgba(34,197,94,.25) 0,transparent 60%);
+      min-height:220px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#9ca3af;
+      font-size:.9rem;
+    }
+
+    /* CONTACTO SIMPLE */
+    .contact-strip{
+      background:#0b1120;
+      padding:24px 18px;
+      border-radius:18px;
+      border:1px solid #1f2937;
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      font-size:.9rem;
+    }
+
+    footer{
+      padding:22px 0;
+      border-top:1px solid #1f2937;
+      text-align:center;
+      font-size:.8rem;
+      color:#9ca3af;
+      margin-top:40px;
+    }
+
+    /* WHATSAPP FLOAT */
+    .wa-float{
+      position:fixed;
+      right:20px;
+      bottom:20px;
+      width:52px;
+      height:52px;
+      border-radius:50%;
+      background:#22c55e;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.6rem;
+      color:#ffffff;
+      box-shadow:0 18px 50px rgba(22,163,74,.7);
+      cursor:pointer;
+      z-index:90;
+      transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+    }
+    .wa-float:hover{
+      transform:translateY(-3px) scale(1.03);
+      box-shadow:0 22px 60px rgba(22,163,74,.9);
+      background:#16a34a;
+    }
+
+    /* CHATBOT */
+    .chatbot-launch{
+      position:fixed;
+      right:20px;
+      bottom:86px;
+      width:360px;
+      max-width:94%;
+      background:#020617;
+      border-radius:20px;
+      border:1px solid #1f2937;
+      box-shadow:0 25px 80px rgba(0,0,0,.9);
+      overflow:hidden;
+      z-index:95;
+      animation:chatIn .5s ease;
+      display:none;
+    }
+    @keyframes chatIn{
+      from{opacity:0;transform:translateY(40px) scale(.95);}
+    }
+    .chat-header{
+      background:linear-gradient(135deg,#f97316,#facc15);
+      padding:12px 14px;
+      font-size:.9rem;
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      color:#111827;
+    }
+    .chat-close{
+      cursor:pointer;
+      font-size:1.2rem;
+    }
+    .chat-body{
+      padding:12px;
+      height:250px;
+      overflow-y:auto;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      font-size:.88rem;
+    }
+    .msg-bot,.msg-user{
+      max-width:85%;
+      padding:9px 11px;
+      border-radius:14px;
+    }
+    .msg-bot{
+      background:#111827;
+    }
+    .msg-user{
+      background:linear-gradient(135deg,#f97316,#facc15);
+      color:#111827;
+      align-self:flex-end;
+    }
+    .chat-input{
+      display:flex;
+      border-top:1px solid #1f2937;
+    }
+    .chat-input input{
+      flex:1;
+      padding:11px;
+      border:none;
+      outline:none;
+      background:#020617;
+      color:#e5e7eb;
+      font-size:.9rem;
+    }
+    .chat-input button{
+      border:none;
+      background:linear-gradient(135deg,#f97316,#facc15);
+      color:#111827;
+      padding:0 16px;
+      cursor:pointer;
+      font-weight:600;
+    }
+
+    @media(max-width:600px){
+      .wa-float{right:16px;bottom:16px;}
+      .chatbot-launch{right:10px;bottom:78px;width:94%;}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container nav-inner">
+    <div class="logo">BURGER<span>FLASH</span></div>
+    <nav class="nav-links">
+      <a href="#promos">Promos</a>
+      <a href="#menu">Menú</a>
+      <a href="#como-pedir">Cómo pedir</a>
+      <a href="#local">Local</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <button class="btn btn-primary" onclick="abrirWhats()">Pedir ahora</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="hero-kicker">Comida rápida & delivery</div>
+      <h1 class="hero-title">
+        Burgers, papas y combos<span> listos en minutos.</span>
+      </h1>
+      <p class="hero-sub">
+        En BurgerFlash preparamos comida rápida caliente, abundante y con sabor casero.
+        Pedí para llevar, delivery o reservalo para comer en el local.
+      </p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="abrirWhats()">Pedir por WhatsApp</button>
+        <button class="btn btn-outline" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">
+          Ver menú completo
+        </button>
+      </div>
+      <div class="hero-meta">
+        <span>🔥 Listo en 15-20 minutos</span>
+        <span>🛵 Delivery en zona</span>
+        <span>⭐ Más de 1.200 pedidos</span>
+      </div>
+    </div>
+
+    <aside class="hero-card">
+      <h3>Combos más pedidos de la casa</h3>
+      <ul class="hero-list">
+        <li>🍔 Combo Doble Bacon · burger doble, papas grandes y gaseosa.</li>
+        <li>🌶 Combo Picante · burger con jalapeños + cheddar + papas rústicas.</li>
+        <li>👨‍👩‍👧 Combo Familiar · 4 burgers clásicas + 2 papas XL + 1.5 L bebida.</li>
+      </ul>
+      <div class="hero-badge-row">
+        <span>Promo del día: <strong>2x1 en burgers clásicas</strong></span>
+        <span>Solo hasta las 23:00</span>
+      </div>
+      <div class="hero-pill">
+        • Este sitio es una demo profesional lista para adaptar al nombre y logo de cualquier restaurante.
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section id="promos">
+  <div class="container">
+    <h2 class="section-title">Promos que salen todo el día</h2>
+    <p class="section-sub">Usá estas promos como ejemplo para mostrar a tus clientes cómo podría verse su carta online.</p>
+
+    <div class="grid-3">
+      <div class="promo-card">
+        <span class="promo-label">Más pedido</span>
+        <div class="promo-title">Combo Doble Bacon</div>
+        <p class="promo-desc">Doble carne, doble cheddar, bacon crocante, papas grandes y gaseosa.</p>
+        <div class="promo-price">$ 7.900</div>
+        <small style="color:#9ca3af;">Perfecto para fotos grandes y llamadas a la acción.</small>
+      </div>
+      <div class="promo-card">
+        <span class="promo-label">Para compartir</span>
+        <div class="promo-title">Combo Familiar x4</div>
+        <p class="promo-desc">4 burgers clásicas, 2 papas XL, 1 gaseosa de 1.5 L. Ideal familias o amigos.</p>
+        <div class="promo-price">$ 18.500</div>
+      </div>
+      <div class="promo-card">
+        <span class="promo-label">Veggie</span>
+        <div class="promo-title">Veggie Crunch</div>
+        <p class="promo-desc">Medallón vegetal, queso, vegetales frescos y salsa especial de la casa.</p>
+        <div class="promo-price">$ 6.800</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="menu">
+  <div class="container">
+    <h2 class="section-title">Menú completo</h2>
+    <p class="section-sub">Todo el menú puede editarse fácilmente: nombres, precios, categorías y descripciones.</p>
+
+    <div class="menu-layout">
+      <div>
+        <div class="menu-category">
+          <h3>Burgers de la casa</h3>
+          <p>Carne a la plancha, pan brioche tostado y salsas propias. Editá este texto según tu cliente.</p>
+        </div>
+        <ul class="menu-list">
+          <li><span>Clásica Simple</span><span class="price">$ 5.900</span></li>
+          <li><span>Doble Cheese</span><span class="price">$ 6.900</span></li>
+          <li><span>Bacon Lovers</span><span class="price">$ 7.500</span></li>
+          <li><span>BBQ Smoke</span><span class="price">$ 7.800</span></li>
+        </ul>
+
+        <div class="menu-category" style="margin-top:18px;">
+          <h3>Para acompañar</h3>
+        </div>
+        <ul class="menu-list">
+          <li><span>Papas clásicas</span><span class="price">$ 2.400</span></li>
+          <li><span>Papas con cheddar y bacon</span><span class="price">$ 3.800</span></li>
+          <li><span>Alitas BBQ x6</span><span class="price">$ 3.900</span></li>
+          <li><span>Nuggets x8</span><span class="price">$ 3.500</span></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="menu-category">
+          <h3>Bebidas & Postres</h3>
+        </div>
+        <ul class="menu-list">
+          <li><span>Gaseosa lata</span><span class="price">$ 1.600</span></li>
+          <li><span>Agua saborizada</span><span class="price">$ 1.500</span></li>
+          <li><span>Milkshake vainilla / chocolate</span><span class="price">$ 3.200</span></li>
+          <li><span>Helado en vaso</span><span class="price">$ 2.400</span></li>
+        </ul>
+
+        <div class="menu-category" style="margin-top:18px;">
+          <h3>Combos oficina / empresa</h3>
+          <p>Arma combos corporativos para reuniones, equipos o eventos.</p>
+        </div>
+        <ul class="menu-list">
+          <li><span>Pack 5 burgers + 5 papas</span><span class="price">$ 32.000</span></li>
+          <li><span>Pack 10 burgers mixtas</span><span class="price">$ 59.000</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="como-pedir">
+  <div class="container">
+    <h2 class="section-title">¿Cómo hacés tu pedido?</h2>
+    <p class="section-sub">Proceso simple pensado para celular. Tus clientes lo entienden en segundos.</p>
+
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        Elegí tus combos o burgers del menú y hacé clic en <b>“Pedir por WhatsApp”</b>.
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        Te abrimos WhatsApp con un mensaje listo para completar: dirección, horario y forma de pago.
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        Confirmamos el tiempo de preparación y te avisamos cuando tu pedido esté listo o en camino. 🔥
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h2 class="section-title">Clientes que ya probaron</h2>
+    <p class="section-sub">Testimonios de ejemplo para mostrar la sección de opiniones en una web gastronómica.</p>
+
+    <div class="opiniones">
+      <div class="op-card">
+        <div class="stars">★★★★★</div>
+        <p>“Las burgers llegan calientes y las papas crocantes. Nuestro lugar de cabecera para pedir los viernes.”</p>
+        <div class="op-client">— Lucía, pedidos por delivery</div>
+      </div>
+      <div class="op-card">
+        <div class="stars">★★★★★</div>
+        <p>“Hicimos un pedido grande para el equipo y salió todo perfecto, a horario y súper abundante.”</p>
+        <div class="op-client">— Mariano, pedido corporativo</div>
+      </div>
+      <div class="op-card">
+        <div class="stars">★★★★★</div>
+        <p>“El local es cómodo, la atención rápida y las salsas de la casa están increíbles.”</p>
+        <div class="op-client">— Carla, cena en el salón</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="local">
+  <div class="container">
+    <h2 class="section-title">Tu próximo punto fijo de hambre</h2>
+    <p class="section-sub">Esta sección se adapta a la dirección real del restaurante y a su mapa de ubicación.</p>
+
+    <div class="local-grid">
+      <div class="local-box">
+        <p><b>Dirección demo:</b> Av. Burgers 1234, Centro.</p>
+        <p><b>Horarios:</b></p>
+        <ul style="margin:6px 0 10px 16px;">
+          <li>Lunes a jueves · 19:00 a 23:30</li>
+          <li>Viernes y sábados · 19:00 a 01:00</li>
+          <li>Domingos · 19:00 a 23:00</li>
+        </ul>
+        <p><b>Teléfono:</b> +54 9 3483 466199</p>
+        <p><b>Pedidos:</b> WhatsApp, mostrador o apps de delivery (según el cliente).</p>
+      </div>
+      <div class="map-placeholder">
+        Aquí podés incrustar un mapa de Google Maps del local real.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contacto">
+  <div class="container">
+    <div class="contact-strip">
+      <div>
+        <b>¿Te gustaría una web así para tu restaurante?</b><br/>
+        Este sitio es una DEMO creada por WEBNIXIA. Podés cambiar logo, colores, textos y precios según cada cliente.
+      </div>
+      <div>
+        <button class="btn btn-primary" onclick="window.open('https://webnixia.vercel.app/#contacto','_blank')">
+          Quiero una web como esta
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Demo profesional para restaurantes de comida rápida · WEBNIXIA ·
+  <span id="year"></span>
+</footer>
+
+<!-- WHATSAPP FLOAT -->
+<div class="wa-float" onclick="abrirWhats()">🟢</div>
+
+<!-- CHATBOT -->
+<div class="chatbot-launch" id="chatBot">
+  <div class="chat-header">
+    Asistente BurgerFlash
+    <span class="chat-close" onclick="toggleChat(false)">×</span>
+  </div>
+  <div class="chat-body" id="chatBody">
+    <div class="msg-bot">🍔 ¡Hola! Soy el asistente de BurgerFlash.</div>
+    <div class="msg-bot">Puedo ayudarte con el menú, promos o pedidos por WhatsApp. ¿Qué estás buscando hoy?</div>
+  </div>
+  <div class="chat-input">
+    <input type="text" id="chatInput" placeholder="Escribí tu mensaje..." />
+    <button onclick="sendChat()">➤</button>
+  </div>
+</div>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  const WHATS_NUMBER = "5493483466199"; // tu número
+
+  function abrirWhats() {
+    const texto = encodeURIComponent("Hola, quiero hacer un pedido en BurgerFlash.");
+    window.open(`https://wa.me/${WHATS_NUMBER}?text=${texto}`, "_blank");
+  }
+
+  // CHATBOT FRONT
+  const chatBox = document.getElementById("chatBody");
+  const chatInput = document.getElementById("chatInput");
+  const chatWidget = document.getElementById("chatBot");
+
+  function toggleChat(show){
+    chatWidget.style.display = show ? "block" : "none";
+  }
+
+  // Mostrar chat automáticamente a los pocos segundos
+  setTimeout(() => toggleChat(true), 1500);
+
+  chatInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendChat();
+    }
+  });
+
+  async function sendChat(){
+    const text = chatInput.value.trim();
+    if(!text) return;
+
+    addMsg("user", text);
+    chatInput.value = "";
+    scrollChat();
+
+    // Mensaje de "pensando"
+    const thinking = addMsg("bot", "🤖 Pensando...");
+    scrollChat();
+
+    try{
+      const payload = {
+        message: `Actúa como el asistente comercial de un restaurante de comida rápida llamado BurgerFlash.
+Responde corto, claro y vendedor. Siempre invitá a pedir por WhatsApp si pregunta por pedidos o reservas.
+Cliente dice: "${text}"`
+      };
+
+      const res = await fetch("https://webnixia-bot.onrender.com/chat", {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      thinking.textContent = data.reply || "Perdón, no pude responder en este momento.";
+
+      // si el modelo menciona whatsapp, igual le recordamos el botón
+      if((data.reply || "").toLowerCase().includes("whatsapp")){
+        thinking.textContent += "\n\nSi querés avanzar ya, hacé clic en el botón verde de WhatsApp abajo a la derecha.";
+      }
+
+    }catch(err){
+      thinking.textContent = "❌ Error de conexión con el servidor.";
+    }
+
+    scrollChat();
+  }
+
+  function addMsg(type,text){
+    const div = document.createElement("div");
+    div.className = type === "user" ? "msg-user" : "msg-bot";
+    div.textContent = text;
+    chatBox.appendChild(div);
+    return div;
+  }
+
+  function scrollChat(){
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+</script>
+
+</body>
+</html>
